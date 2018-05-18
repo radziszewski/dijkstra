@@ -1,17 +1,65 @@
-public class dijkstra {
+package dijkstra;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class Dijkstra {
 
 	public static void main(String[] args) {
-			
-			
-			int[][] graf = {{ 0, 0, 0, 1, 90, 35, 89, 2, 0, 28},{ 0, 0, 1, 19, 0, 0, 0, 0, 2, 85},{ 0, 1, 0, 0, 7, 0, 0, 0, 0, 0},{ 1, 19, 0, 0, 0, 0, 91, 0, 0, 0},{ 90, 0, 7, 0, 0, 0, 78, 0, 15, 61},{ 35, 0, 0, 0, 0, 0, 0, 0, 81, 0},{ 89, 0, 0, 91, 78, 0, 0, 0, 0, 0},{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 3},{ 0, 2, 0, 0, 15, 81, 0, 0, 0, 0},{ 28, 85, 0, 0, 61, 0, 0, 3, 0, 0}};
+		
+		int size = 10;
 
+		switch(args[0]) {
+			case "10": size=10; break;
+			case "100": size=100; break;
+			case "200": size=200; break;
+			case "300": size=300; break;
+		}
 
-			int[][] wynik = algorytm(1,2,graf); 
+		String name= size + "x" + size;
+		String path = "../grafy/" + name + "/graf_" + name + ".json";
+		
+		JSONArray jsonArray = new JSONArray();
+		try {
+			 jsonArray = parseJSONFile(path);
+		} catch (IOException | JSONException e) {
+			e.printStackTrace();
+		}
 			
-			System.out.println(wynik[4][2]);
+		int len = jsonArray.length();
+		int[][] graf = new int[len][len];
+		
+		try {
+			for(int i = 0; i < len; ++i) {
+				JSONArray row = jsonArray.getJSONArray(i);
+				for(int j = 0; j < len; ++j) {
+					graf[i][j] = row.getInt(j);
+				}
+			}		
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+	/*	for(int i = 0; i < len; ++i) {
+			for(int j = 0; j < len; ++j) {
+				System.out.println(graf[i][j] + ", ");
+			}
+			System.out.println("");
+		} */	
+			
+		int[][] wynik = algorytm(1,2,graf); 	
+		//System.out.println(wynik[4][2]);
 		
 	}
 	
+	static JSONArray parseJSONFile(String filename) throws  IOException, JSONException {
+        String content = new String(Files.readAllBytes(Paths.get(filename)));
+        return new JSONArray(content);
+    }
 	
 	static int[][] algorytm( int punkt_start, int punkt_koniec, int[][] graf)
 	{
@@ -30,7 +78,7 @@ public class dijkstra {
 			}
 		}
 		
-		int max = 999;
+		int max = 99999;
 		for(int i = 0; i < wielkosc; ++i){
 
 	        for(int j = 0; j < wielkosc; ++j)
@@ -91,7 +139,7 @@ public class dijkstra {
 
 
 		long estimatedTime = System.currentTimeMillis() - startTime;
-		System.out.println("Czas " + estimatedTime + " ms.");  
+		System.out.println("" + estimatedTime + "");  
 
 		return wynik;
 		
